@@ -73,3 +73,99 @@ footer{margin-top:48px;background:var(--card-white);color:var(--muted);padding:2
 
 /* Scroll reveal hidden state */
 .reveal-on-scroll{opacity:0;transform:translateY(24px);transition:opacity 600ms ease-out, transform 600ms ease-out;}
+
+/* Canvas particles */
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let w = canvas.width = window.innerWidth;
+let h = canvas.height = window.innerHeight;
+window.addEventListener('resize', ()=>{ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; });
+const particles=[]; const num = Math.round(Math.min(120,Math.max(40,(w*h)/60000))); const maxD=130;
+for(let i=0;i<num;i++){particles.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.8+0.6,dx:(Math.random()-0.5)*0.45,dy:(Math.random()-0.5)*0.45,color:`rgba(0,191,166,${0.5+Math.random()*0.3})`});}
+function anim(){ctx.clearRect(0,0,w,h); for(let i=0;i<particles.length;i++){for(let j=i+1;j<particles.length;j++){const a=particles[i],b=particles[j]; const dx=a.x-b.x,dy=a.y-b.y; const dist=Math.sqrt(dx*dx+dy*dy); if(dist<maxD){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(0,191,166,${(1-dist/maxD)*0.12})`;ctx.lineWidth=1;ctx.stroke();}}} particles.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x>w)p.x=0;if(p.x<0)p.x=w;if(p.y>h)p.y=0;if(p.y<0)p.y=h;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.fill();});requestAnimationFrame(anim);} anim();
+
+/* Hamburger toggle */
+const hamburger=document.querySelector('.hamburger');
+const navUL=document.querySelector('nav ul');
+hamburger.addEventListener('click',()=>{navUL.classList.toggle('show');});
+navUL.addEventListener('click',(e)=>{if(e.target.tagName==='A'){navUL.classList.remove('show');}});
+
+/* Footer year */
+document.getElementById('year')?.textContent=new Date().getFullYear();
+
+/* Scroll reveal */
+const reveals=document.querySelectorAll('.reveal-on-scroll');
+const obsOptions={root:null,rootMargin:'0px',threshold:0.12};
+const revealObserver=new IntersectionObserver((entries,obs)=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('revealed'); obs.unobserve(entry.target);}}),{threshold:0.1}});
+reveals.forEach(r=>revealObserver.observe(r));
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalesFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="bgCanvas" style="position:fixed;top:0;left:0;z-index:-1;"></canvas>
+
+<header>
+<div class="container">
+  <div class="logo">SalesFlow</div>
+  <nav>
+    <ul>
+      <li><a href="services.html">Tjänster</a></li>
+      <li><a href="case.html">Case</a></li>
+      <li><a href="about.html">Om oss</a></li>
+      <li><a href="contact.html">Kontakt</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+</div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-inner">
+    <h1 class="reveal-on-scroll">Maximera din försäljning med SalesFlow</h1>
+    <p class="reveal-on-scroll">Vi hjälper företag att synas online och växa digitalt.</p>
+    <a href="contact.html" class="btn reveal-on-scroll">Kontakta oss</a>
+  </div>
+</section>
+
+<section class="section services-wrap reveal-on-scroll">
+  <h2 class="services-title">Våra tjänster</h2>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">🌐</div>
+      <h3>Digital närvaro</h3>
+      <p>Bygg en stark digital närvaro med professionella hemsidor, SEO och strategi för rätt målgrupp.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📱</div>
+      <h3>Sociala medier</h3>
+      <p>Planera, producera och publicera innehåll som stärker varumärket och skapar engagemang.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">💬</div>
+      <h3>Kommunikation</h3>
+      <p>Effektiv hantering av kundkontakter och mejl för tydlig och professionell kommunikation.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section cta reveal-on-scroll">
+  <h3>Kontakta oss</h3>
+  <a href="contact.html" class="btn">Kontakta oss</a>
+</section>
+
+<footer>
+  <p>&copy; <span id="year"></span> SalesFlow. Alla rättigheter förbehållna. Email: salesflow@gmail.com</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
+
